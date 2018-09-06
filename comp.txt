@@ -1,0 +1,5 @@
+g++ -Wall -std=c++11 test/main.cpp src/int_ranges.cpp -I include -L lib -lgtest -lgtest_main -pthread -o run_tests
+
+
+g++ -Wall -std=c++11 src/driver.cpp include/int_ranges.h src/int_ranges.cpp -o a
+

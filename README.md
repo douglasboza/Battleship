@@ -1,4 +1,11 @@
+
+g++ -Wall -std=c++11 src/main.cpp include/functions.h src/functions.cpp -o a
+
+
+
 Cada barco é numerado em decimal, sendo levado em consideração o sentido do barco e as casas dele.
+
+----- 5 / no sentido vertical é o 51
 
 ---- 4 / no sentido vertical é o 41
 
