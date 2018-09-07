@@ -45,14 +45,14 @@ namespace ir{
 	   	int posicao_aleatoria_casa(0);
 	   	int barco_aleatorio(0);
 	   	int linha_vez(0);
-	   	int limite_aleatorio = linhas * colunas;
+	   	int limite_aleatorio = (linhas * colunas) - 1 ;
 	   	int coluna_vez(0);
   		bool teste_posicao_livre(false);
 
   		int barcos[10];
   		int barco_limite(0);
 
-		srand(time(NULL));
+		
    		
    		// int cont_posicao_barco(0);
    		// int barcos_livres[8];
@@ -71,6 +71,8 @@ namespace ir{
 	    posicoes_livres[1][0] = 6;
 	    posicoes_livres[1][1] = 7;
 
+		srand(time(NULL));
+        
         while(total_barcos > 0){ // enquanto houver barcos
     
 		    while(teste_posicao_livre == false){ // até encontrar uma posicao que seja possível colocar barco
@@ -102,41 +104,54 @@ namespace ir{
 					// barco_limite++;
 			  //   }
 
-			  //   if(ir::verifica_barco(linha_vez, coluna_vez, 31) == true){
-					// teste_posicao_livre = true;
-					// barcos[barco_limite] = 31;
-					// barco_limite++;
-			  //   }
+			    if(ir::verifica_barco(linha_vez, coluna_vez, 31) == true){
+					teste_posicao_livre = true;
+					barcos[barco_limite] = 31;
+					barco_limite++;
+			    }
 
-			  //   if(ir::verifica_barco(linha_vez, coluna_vez, 3) == true){
-					// teste_posicao_livre = true;
-					// barcos[barco_limite] = 3;
-					// barco_limite++;
-			  //   }
+			    if(ir::verifica_barco(linha_vez, coluna_vez, 3) == true){
+					teste_posicao_livre = true;
+					barcos[barco_limite] = 3;
+					barco_limite++;
+			    }
 
 			    if(ir::verifica_barco(linha_vez, coluna_vez, 21) == true){
 					teste_posicao_livre = true;
 					barcos[barco_limite] = 21;
-					barco_limite++;
+					barco_limite += 1;
 			    }
 
 			    if(ir::verifica_barco(linha_vez, coluna_vez, 2) == true){
 					teste_posicao_livre = true;
 					barcos[barco_limite] = 2;
-					barco_limite++;
+					barco_limite += 1;
 			    }
 
 			    if(ir::verifica_barco(linha_vez, coluna_vez, 1) == true){
 					teste_posicao_livre = true;
 					barcos[barco_limite] = 1;
-					barco_limite++;
+					barco_limite += 1;
 			    }
 
 
+			     
+
+
 			    if(teste_posicao_livre == true){
-			    	barco_aleatorio = (rand() % (barco_limite));			    	
+			    	
+
+			    	barco_aleatorio = (rand() % (barco_limite + 1));	
+
+
 			    	preencher_barco(linha_vez, coluna_vez, barcos[barco_aleatorio]);
-			    	total_barcos-=1;
+			    	total_barcos -= 1;
+			    	
+			    	std::cout << "\n linha_vez " << linha_vez;
+			    	std::cout << "\n coluna_vez " << coluna_vez;
+			    	std::cout << "\n total de barcos " << total_barcos;
+			    	std::cout << "\n barco vez " << barcos[barco_aleatorio];
+			    	 std::cout << "\n" << std::endl;
 			    }else{
 			    	std::swap(* posicoes_livres[posicao_aleatoria_casa], * posicoes_livres[limite_aleatorio]);
 			    	limite_aleatorio -= 1;
@@ -161,7 +176,7 @@ namespace ir{
        		// ir::criar_barco(matriz, linhas, colunas, posicoes_livres);
         }
 
-
+        std::cout << "\n" << std::endl;
         for (int i = 0; i < 10; ++i){
 	        for (int j = 0; j < 10; ++j){
 	            std::cout << matriz[i][j] << " ";
@@ -175,64 +190,131 @@ namespace ir{
 
 
 
-	bool verifica_barco(int linha, int coluna, int tipo_barco){
+	bool verifica_barco(int linha, int coluna, int tipo_barco){ // retorna true se pode colocar o barco
 		bool verifica_proxima(true);
 		bool verifica_anterior(true);
 
-		if(matriz[linha][coluna] == 1){
-			return false; // caso base para estar ocupado a casa
-		}
+	
 
 		if(tipo_barco == 1){
-			if(verifica_proxima_casa(linha, coluna, 1)){
-				return false;
-			}
-			if(verifica_anterior_casa(linha, coluna, 1)){
-				return false;
-			}
-			if(verifica_topo_casa(linha, coluna, 1)){
-				return false;
-			}
-			if(verifica_inferior_casa(linha, coluna, 1)){
-				return false;
-			}
-		
+			if(verifica_casa_existe(linha, coluna) == false) return false;
+
+			if(verifica_casa_vazia(linha + 1, coluna) == false) return false;
+			if(verifica_casa_vazia(linha - 1, coluna) == false) return false;
+			if(verifica_casa_vazia(linha, coluna + 1) == false) return false;
+			if(verifica_casa_vazia(linha, coluna - 1) == false) return false;
+
 		}
 
 		if(tipo_barco == 2){
 			// std::cout << "\n\n\n\n" << std::endl;
 			// std::cout << linha << std::endl;
 			// std::cout << coluna << std::endl;
-			if(verifica_proxima_casa(linha, coluna, 2)){ // final da linha
+			if(verifica_proxima_casa(linha, coluna, 2) == false){ // final da linha
 				return false;
 			}
-			if(verifica_anterior_casa(linha, coluna, 2)){
+			if(verifica_anterior_casa(linha, coluna - 1, 2) == false){
 				return false;
 			}
-			if(verifica_topo_casa(linha, coluna, 2)){
+			if(verifica_topo_casa(linha, coluna, 2) == false){
 				return false;
 			}
-			if(verifica_inferior_casa(linha, coluna, 2)){
+			if(verifica_inferior_casa(linha + 1, coluna, 2) == false) return false;
+
+			if(verifica_inferior_casa(linha, coluna, 2) == false) return false;
+
+		}
+
+		
+		if(tipo_barco == 21){
+			// std::cout << "\n\n\n\n" << std::endl;
+			// std::cout << linha << std::endl;
+			// std::cout << coluna << std::endl;
+			if(verifica_proxima_casa(linha, coluna, 1) == false) return false;
+
+			if(verifica_proxima_casa(linha + 1, coluna, 1) == false) return false;
+
+			if(verifica_anterior_casa(linha, coluna, 1) == false) return false;
+
+			if(verifica_anterior_casa(linha + 1, coluna, 1) == false) return false;
+			
+			if(verifica_topo_casa(linha, coluna, 1) == false) return false;
+			
+			if(verifica_inferior_casa(linha + 2, coluna, 1) == false) return false;
+			
+		}
+
+
+		if(tipo_barco == 3){
+			if(verifica_proxima_casa(linha, coluna, 3) == false){ // final da linha
+				return false;
+			}
+			if(verifica_anterior_casa(linha, coluna, 3) == false){
+				return false;
+			}
+			if(verifica_topo_casa(linha, coluna, 3) == false){
+				return false;
+			}
+
+			if(verifica_inferior_casa(linha + 1, coluna, 3) == false) return false;
+
+			if(verifica_inferior_casa(linha, coluna, 3) == false) return false;
+
+		}
+		
+
+		if(tipo_barco == 31){
+			if(verifica_proxima_casa(linha, coluna, 1) == false) return false;
+			
+			if(verifica_proxima_casa(linha + 1, coluna, 1) == false) return false;
+
+			if(verifica_proxima_casa(linha + 2, coluna, 1) == false) return false;
+			
+			if(verifica_anterior_casa(linha, coluna, 1) == false) return false;
+			
+			if(verifica_anterior_casa(linha + 1, coluna, 1) == false) return false;
+
+			if(verifica_anterior_casa(linha + 2, coluna, 1) == false) return false;
+			
+			if(verifica_topo_casa(linha, coluna, 1) == false) return false;
+			
+			if(verifica_inferior_casa(linha + 3, coluna, 1) == false) return false;
+			
+		}
+
+
+
+
+		return true;
+	}
+
+	bool verifica_casa_vazia(int linha, int coluna){
+		if((linha < linhas) && (coluna < colunas) && (linha >= 0) && (coluna >= 0)){ 
+			if(matriz[linha][coluna] == 1){
 				return false;
 			}
 		}
-
 		return true;
+	}
+
+	bool verifica_casa_existe(int linha, int coluna){
+		if((linha < linhas) && (coluna < colunas) && (linha >= 0) && (coluna >= 0)){ 
+			return true
+		}
+		return false;
 	}
 	
 	bool verifica_anterior_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
 		if(coluna == 0 ){
-			return false;
+			return true;
 		}else{
 			for (int j = 0; j < casas; ++j){
-				if(matriz[linha + j][coluna - 1] == 1){
-					return true;
+				if(matriz[linha + j][coluna] == 1){
+					return false;
 				}
 			}
 		}
-
-		return false;
-		
+		return true;
 	}
 
 	bool verifica_proxima_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
@@ -240,51 +322,57 @@ namespace ir{
 			for(int j = 0; j <= casas; ++j){
 				
 				
-				std::cout << matriz[linha][coluna + j] << " verificado " << std::endl;
-				std::cout << linha << " linha " << std::endl;
-				std::cout << coluna << " coluna \n " << std::endl;
+				// std::cout << matriz[linha][coluna + j] << " verificado " << std::endl;
+				// std::cout << linha << " linha " << std::endl;
+				// std::cout << coluna+j << " coluna \n " << std::endl;
 
 				if(matriz[linha][coluna + j] == 1){
-					return true;
+					return false;
 				}
 			}
 		}else{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	bool verifica_topo_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
 		if(linha != 0){
 			for (int j = 0; j <= casas; ++j){
 				if(matriz[linha - 1][coluna + j] == 1){
-					return true;
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	bool verifica_inferior_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
-		if(coluna != colunas){
+		if(linha != linhas){
 			for (int j = 0; j <= casas; ++j){
-				if(matriz[linha + 1][coluna + j] == 1){
-					return true;
+				
+
+				std::cout << matriz[linha][coluna + j] << " verificado " << std::endl;
+				std::cout << linha << " linha " << std::endl;
+				std::cout << coluna+j << " coluna \n " << std::endl;
+
+				if(matriz[linha][coluna + j] == 1){
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	bool verifica_superior_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
 		if(coluna != 0){
 			for (int j = 0; j <= casas; ++j){
 				if(matriz[linha - 1][coluna + j] == 1){
-					return true;
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 
@@ -303,10 +391,17 @@ namespace ir{
 			matriz[linha + 1][coluna] = 1;
 		}
 
-		// if(tipo_barco == 21){
-		// 	matriz[linha][coluna] = 1;
-		// 	matriz[linha + 1][coluna] = 1;
-		// }
+		if(tipo_barco == 3){
+			matriz[linha][coluna] = 1;
+			matriz[linha][coluna + 1]  = 1;
+			matriz[linha][coluna + 2]  = 1;
+		}
+
+		if(tipo_barco == 31){
+			matriz[linha][coluna] = 1;
+			matriz[linha + 1][coluna] = 1;
+			matriz[linha + 2][coluna] = 1;
+		}
 
 	}
 
