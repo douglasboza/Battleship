@@ -26,13 +26,19 @@ int main (void){
     //std::cout << ">>> A: " << print( std::begin(A), std::end(A) ) << std::endl;
 
     // auto b = ir::min(std::begin(A), std::end(A) );
-    int matriz[10][10];
 
-    ir::inicializa_matriz(matriz[0], 10, 10);
+
+    ir::inicializa_matriz();
+
+    ir::principal();
+
+
+    
+
+    // std::cout << matriz.end() << std::endl;
 
 
     // ir::compact( std::begin(A), std::end(A));
-    // std::cout << *( std::begin(A) + 3) << std::endl;
 
     // ir::partition( std::begin(A), std::end(A), std::begin(A) + 3);
 
