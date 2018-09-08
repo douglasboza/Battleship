@@ -35,8 +35,8 @@ int main (void){
 
     ir::inicializa_matriz();
     ir::zera_matriz();
-    
-    ir::principal();
+
+    ir::principal(linhas, colunas);
 
     ir::liberar();
 

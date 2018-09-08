@@ -1,6 +1,7 @@
 
 #include "../include/functions.h"
 #include <iostream> // cout, endl
+#include <fstream> // incluir 
 
 namespace ir{
 
@@ -25,7 +26,9 @@ namespace ir{
 	int **matriz;
 
 	int total_barcos = total5 + total4 + total3 + total2 + total1;
-	
+	int total_barcos_fixo = total_barcos;
+	int m_barcos[10][2]; // matriz com os barcos do tabuleiro
+
 	void liberar(){
 	    for(int i = 0; i < linhas; i++)
 	        free(matriz[i]);
@@ -41,6 +44,18 @@ namespace ir{
 	    }
 	}
 
+	void salvar_barco(){		
+		std::ofstream out;
+		out.open("tabuleiros", std::ios::out | std::ios::app ); 
+
+		for (int i = 0; i < total_barcos_fixo; ++i){
+	        out << m_barcos[i][0] << " " << m_barcos[i][1] << " " << m_barcos[i][2] << std::endl;
+	    }
+	    out << " 9999 " << std::endl;
+		out.close();
+		  
+	}
+
 	void inicializa_matriz(){
 		matriz = (int**)malloc(linhas * sizeof(int*));
 		for (int i = 0; i < linhas; i++){	
@@ -51,11 +66,9 @@ namespace ir{
 
 
 
-    bool principal(){
-    	// linhas = l;
-    	// colunas = l;
-
-
+    bool principal(int l, int c){
+    	linhas = l;
+    	colunas = c;
 
     	int posicoes_livres[linhas * colunas][2];
     	int limite_posicao_livre(0);
@@ -67,7 +80,7 @@ namespace ir{
 	   	int coluna_vez(0);
   		bool teste_posicao_livre(false);
 
-  		int barcos[20];
+  		int barcos[10];
   		int barco_limite(0);
 
 		
@@ -177,12 +190,12 @@ namespace ir{
 
 
 			     
-				std::cout << "\n aqui9999 = " << std::endl;;
+				std::cout << "\n aqui9999 = " << std::endl;
 
-			    	std::cout << "\n aquierror = " << std::endl;;
+			    	std::cout << "\n aquierror = " << std::endl;
 
 			    if(teste_posicao_livre == true){
-			    	std::cout << "\n aqui111 = "<< barco_limite << std::endl;;
+			    	std::cout << "\n aqui111 = "<< barco_limite << std::endl;
 
 			    	barco_aleatorio = (rand() % (barco_limite));	
 
@@ -201,6 +214,11 @@ namespace ir{
 				   	std::cout << "\n coluna vez = " << coluna_vez << std::endl;
 				    std::cout << "\n linha vez = " << linha_vez << std::endl;
 			    	std::cout << "\n barco da vez = "<< barcos[barco_aleatorio] << std::endl;
+
+			    	
+			    	m_barcos[total_barcos][0] = linha_vez;
+			    	m_barcos[total_barcos][1] = coluna_vez;
+			    	m_barcos[total_barcos][2] = barcos[barco_aleatorio];
 
 			    	preencher_barco(linha_vez, coluna_vez, barcos[barco_aleatorio]);
 
@@ -261,6 +279,7 @@ namespace ir{
 	        std::cout << "\n" << std::endl;
 	    }
 
+	    salvar_barco(); 
 	    return true;
 
     }

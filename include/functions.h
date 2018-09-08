@@ -14,7 +14,7 @@ namespace ir {
 
     bool verifica_barco(int linha, int coluna, int tipo_barco);
  	
- 	bool principal();
+ 	bool principal(int linhas, int colunas);
 
  	void preencher_barco(int linha, int coluna, int tipo_barco);
  	
@@ -32,6 +32,7 @@ namespace ir {
 
  	void zera_matriz();
 
+ 	void salvar_barco();
 
 }
 
