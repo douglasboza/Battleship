@@ -27,13 +27,19 @@ int main (void){
 
     // auto b = ir::min(std::begin(A), std::end(A) );
 
+    // int total_barcos = 50;
+    int linhas = 10;
+    int colunas = 10;
+    int tabuleiros = 50;
+
 
     ir::inicializa_matriz();
-
+    ir::zera_matriz();
+    
     ir::principal();
 
+    ir::liberar();
 
-    
 
     // std::cout << matriz.end() << std::endl;
 

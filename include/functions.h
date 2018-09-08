@@ -8,12 +8,13 @@ namespace ir {
 
     /// Negate all integer values in [first;last).
     void inicializa_matriz();
+    void liberar();
 
     // void criar_barco(int * matriz, int linhas, int colunas, int * posicoes_livres);
 
     bool verifica_barco(int linha, int coluna, int tipo_barco);
  	
- 	void principal();
+ 	bool principal();
 
  	void preencher_barco(int linha, int coluna, int tipo_barco);
  	
@@ -25,5 +26,13 @@ namespace ir {
 
  	bool verifica_inferior_casa(int linha, int coluna, int casas);
 
+ 	int verifica_casa_existe(int linha, int coluna);
+ 	
+ 	int verifica_casa_vazia(int linha, int coluna);
+
+ 	void zera_matriz();
+
+
 }
+
 #endif
