@@ -28,16 +28,21 @@ int main (void){
     // auto b = ir::min(std::begin(A), std::end(A) );
 
     // int total_barcos = 50;
-    int linhas = 10;
-    int colunas = 10;
+    int linhas = 15;
+    int colunas = 15;
     int tabuleiros = 50;
+    bool teste_gerou(true);
+    ir::inicializa_matriz(linhas, colunas);
 
-
-    ir::inicializa_matriz();
-    ir::zera_matriz();
-
-    ir::principal(linhas, colunas);
-
+    while(tabuleiros > 0){
+        ir::zera_matriz();
+        teste_gerou = ir::principal();
+        if(teste_gerou == false){
+            tabuleiros += 1;
+        }else{
+            tabuleiros -= 1;
+        }
+    }
     ir::liberar();
 
 

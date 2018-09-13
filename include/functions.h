@@ -6,32 +6,31 @@
 
 namespace ir {
 
-    /// Negate all integer values in [first;last).
-    void inicializa_matriz();
+    // Aloca memória para a matriz do tabuleiro
+    void inicializa_matriz(int linhas, int colunas);
+
+    //libera a memória da matriz do tabuleiro
     void liberar();
 
-    // void criar_barco(int * matriz, int linhas, int colunas, int * posicoes_livres);
-
+    //verifica se um barco pode ser colocado em uma casa
     bool verifica_barco(int linha, int coluna, int tipo_barco);
  	
- 	bool principal(int linhas, int colunas);
+ 	//função principal que gera o tabuleiro
+ 	bool principal();
 
+ 	//preenche o barco no tabuleiro
  	void preencher_barco(int linha, int coluna, int tipo_barco);
  	
- 	bool verifica_proxima_casa(int linha, int coluna, int casas);
-
- 	bool verifica_anterior_casa(int linha, int coluna, int casas);
- 	
- 	bool verifica_topo_casa(int linha, int coluna, int casas);
-
- 	bool verifica_inferior_casa(int linha, int coluna, int casas);
-
+ 	//verifica se linha x coluna existe no tabuleiro
  	int verifica_casa_existe(int linha, int coluna);
  	
+ 	//verifica se as casas perto do linha x coluna estão vazias
  	int verifica_casa_vazia(int linha, int coluna);
 
+ 	//reinicia o tabuleiro
  	void zera_matriz();
 
+ 	//salva o tabuleiro no arquivo
  	void salvar_barco();
 
 }

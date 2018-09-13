@@ -4,127 +4,126 @@
 #include <fstream> // incluir 
 
 namespace ir{
-
-	// int barco5(1);
-	// int barco51(1);
-	// int barco4(2);
-	// int barco41(2);
-	// int barco3(3);
-	// int barco31(3);
-	// int barco2(3);
-	// int barco21(3);
-	// int barco1(1);
-
+	//total disponível para cada barco
 	int total5(1);
 	int total4(2);
 	int total3(3);
 	int total2(3);
 	int total1(1);
 
-	int linhas = 10;
-	int colunas = 10;
-	int **matriz;
+	int linhas = 10; // linhas do tabuleiro
+	int colunas = 10; // colunas do tabuleiro
+	int **matriz; //matriz do tabuleiro
 
 	int total_barcos = total5 + total4 + total3 + total2 + total1;
 	int total_barcos_fixo = total_barcos;
 	int m_barcos[10][2]; // matriz com os barcos do tabuleiro
 
-	void liberar(){
+	void inicializa_matriz(int l, int c){  // Aloca memória para a matriz do tabuleiro
+		linhas = l; // seta linhas do tabuleiro na variável global
+    	colunas = c; // seta colunas do tabuleiro na variável global
+
+		matriz = (int**)malloc(linhas * sizeof(int*)); // alocação de meória
+		for (int i = 0; i < linhas; i++){	
+		    matriz[i] = (int*)malloc(colunas * sizeof(int)); // alocação de meória
+		}
+	}
+
+
+
+	void liberar(){ // aloca memória para a matriz do tabuleiro
 	    for(int i = 0; i < linhas; i++)
 	        free(matriz[i]);
 
 	    free(matriz);
 	}
 
-	void zera_matriz(){
+	void zera_matriz(){ // //reinicia o tabuleiro zerando as posições
 		for (int i = 0; i < linhas; i++) {
 	        for (int j = 0; j < colunas; j++) {
-	            matriz[i][j] = 0;
+	            matriz[i][j] = 0; 
 	        }
 	    }
+
+	    for (int i = 0; i < 10; i++) {
+	        for (int j = 0; j < 2; j++) {
+	            m_barcos[i][j] = 0; 
+	        }
+	    }
+
+	    total5 = 1;
+		total4 = 2;
+		total3 = 3;
+		total2 = 3;
+		total1 = 1;
+		total_barcos = total5 + total4 + total3 + total2 + total1;
+		total_barcos_fixo = total_barcos;
+
 	}
 
-	void salvar_barco(){		
+	void salvar_barco(){ // Salva o array de barcos no arquivo	
 		std::ofstream out;
 		out.open("tabuleiros", std::ios::out | std::ios::app ); 
 
 		for (int i = 0; i < total_barcos_fixo; ++i){
 	        out << m_barcos[i][0] << " " << m_barcos[i][1] << " " << m_barcos[i][2] << std::endl;
 	    }
-	    out << " 9999 " << std::endl;
+	    out << " 9999 " << std::endl; //indica o final de um tabuleiro
 		out.close();
 		  
 	}
 
-	void inicializa_matriz(){
-		matriz = (int**)malloc(linhas * sizeof(int*));
-		for (int i = 0; i < linhas; i++){	
-		    matriz[i] = (int*)malloc(colunas * sizeof(int));
-		}
-	}
 
 
 
+	// função principal que gera o tabuleiro
+	// retorna true, se conseguir gerar um tabuleiro
+    bool principal(){
+    	int posicoes_livres[linhas * colunas][2]; // matriz que guarda cada coordenada coluna x linha
+   		int cont_posicao(0); // Contador para preencher a matriz posições livres
+	   	int posicao_aleatoria_casa(0); // Posição aleatória da coordenada da casa
+	   	int barco_aleatorio(0); // Posição o barco aleatório
+	   	int linha_vez(0); // linha sorteada
+	   	int coluna_vez(0); // coluna sorteada
+	   	int limite_aleatorio = (linhas * colunas) - 1 ; // Limite de coordenadas possíveis linha x coluna
+  		bool teste_posicao_livre(false); // teste para verificar se a coordenada está livre para um barco
 
-    bool principal(int l, int c){
-    	linhas = l;
-    	colunas = c;
-
-    	int posicoes_livres[linhas * colunas][2];
-    	int limite_posicao_livre(0);
-   		int cont_posicao(0);
-	   	int posicao_aleatoria_casa(0);
-	   	int barco_aleatorio(0);
-	   	int linha_vez(0);
-	   	int limite_aleatorio = (linhas * colunas) - 1 ;
-	   	int coluna_vez(0);
-  		bool teste_posicao_livre(false);
-
-  		int barcos[10];
-  		int barco_limite(0);
-
-		
-   		
-   		// int cont_posicao_barco(0);
-   		// int barcos_livres[8];
+  		int barcos[10]; // array com os possíveis barcos
+  		int barco_limite(0); // até onde foi preenchido o array barcos
+  		
 
 
-   		for (int i = 0; i < linhas; i++){
+   		for (int i = 0; i < linhas; i++){ // preenche as corrdenadas na matriz posições livres
 	        for (int j = 0; j < colunas; j++) {
-	            posicoes_livres[cont_posicao][0] = i;
-	            posicoes_livres[cont_posicao][1] = j;
-	            cont_posicao++;
+	            posicoes_livres[cont_posicao][0] = i; // linha
+	            posicoes_livres[cont_posicao][1] = j; // coluna
+	            cont_posicao++; // próxima posição
 	        }
 	    }
 
-		srand(time(NULL));
         
-        while(total_barcos > 0){ // enquanto houver barcos
+        while(total_barcos > 0){ // enquanto houver barcos isponíveis
+			
     
-				std::cout << "\n aqui --- = " << linha_vez;
-
 		    while(teste_posicao_livre == false){ // até encontrar uma posicao que seja possível colocar barco
-		    	
-		    	if(limite_aleatorio == 0 ){
+	    		// srand(time(NULL));
+		    	if(limite_aleatorio == 0 ){ // Caso 0, significa que todas as posições estão indisponíveis
 		    		std::cout << "\n Erro! não conseguiu achar uma solução";
 		    		return false;
-		    		// exit(0);
 		    	}
 
-		    	std::cout << "\n limite aleatorio = " << limite_aleatorio;
-		    	std::cout << "\n  total_barcos = " << total_barcos;
-
-			    posicao_aleatoria_casa = (rand() % (limite_aleatorio));
-			   	linha_vez = posicoes_livres[posicao_aleatoria_casa][0];
-			   	coluna_vez = posicoes_livres[posicao_aleatoria_casa][1];
+			    posicao_aleatoria_casa = (rand() % (limite_aleatorio)); // gera um número aleatório até a posição limite de corrdenadas
+			   	linha_vez = posicoes_livres[posicao_aleatoria_casa][0]; // linha aleatória
+			   	coluna_vez = posicoes_livres[posicao_aleatoria_casa][1]; // coluna aleatória
 			    
 			     // std::cout << "\n linha vez = " << matriz[linha_vez][coluna_vez];
 
-			    if(total5 > 0){
-				    if(ir::verifica_barco(linha_vez, coluna_vez, 51) == true){
-						teste_posicao_livre = true;
-						barcos[barco_limite] = 51;
-					 	barco_limite++;
+			    if(total5 > 0){ // se ainda há barco com 5 casas
+				    if(ir::verifica_barco(linha_vez, coluna_vez, 51) == true){ 
+				    	// verifica se o barco 51 pode ser colocado na linha x coluna sorteada
+						teste_posicao_livre = true; // encontrou um barco disponível para a posição linha x coluna
+						barcos[barco_limite] = 51; // adiciona o barco no array barcos
+					 	barco_limite++; // próxima posição dos barcos
 				    }
 
 				    if(ir::verifica_barco(linha_vez, coluna_vez, 5) == true){
@@ -134,7 +133,7 @@ namespace ir{
 				    }
 				}
 
-			    if(total4 > 0){
+			    if(total4 > 0){// se ainda há barco com 4 casas
 				    if(ir::verifica_barco(linha_vez, coluna_vez, 41) == true){
 						teste_posicao_livre = true;
 						barcos[barco_limite] = 41;
@@ -149,7 +148,7 @@ namespace ir{
 				}
 
 
-			    if(total3 > 0){
+			    if(total3 > 0){// se ainda há barco com 3 casas
 				    if(ir::verifica_barco(linha_vez, coluna_vez, 31) == true){
 						teste_posicao_livre = true;
 						barcos[barco_limite] = 31;
@@ -164,7 +163,7 @@ namespace ir{
 				}
 
 
-			    if(total2 > 0){
+			    if(total2 > 0){// se ainda há barco com 2 casas
 				    if(ir::verifica_barco(linha_vez, coluna_vez, 21) == true){
 						teste_posicao_livre = true;
 						barcos[barco_limite] = 21;
@@ -178,9 +177,8 @@ namespace ir{
 				    }
 				}
 
-				std::cout << "\n aqui222 = " << linha_vez;
 
-			    if(total1 > 0){
+			    if(total1 > 0){// se ainda há barco com 1 casa
 				    if(ir::verifica_barco(linha_vez, coluna_vez, 1) == true){
 						teste_posicao_livre = true;
 						barcos[barco_limite] = 1;
@@ -189,17 +187,12 @@ namespace ir{
 			    }
 
 
-			     
-				std::cout << "\n aqui9999 = " << std::endl;
+			    if(teste_posicao_livre == true){ // Se econtrou pelo menos um barco para linha x coluna
+			    	// std::cout << "\n aqui111 = "<< barco_limite << std::endl;
 
-			    	std::cout << "\n aquierror = " << std::endl;
+			    	barco_aleatorio = (rand() % (barco_limite)); // Sorteia um número entre 0 e o total de barcos para a posição
 
-			    if(teste_posicao_livre == true){
-			    	std::cout << "\n aqui111 = "<< barco_limite << std::endl;
-
-			    	barco_aleatorio = (rand() % (barco_limite));	
-
-
+			    	// Verifica qual barco foi sorteado para a posição e diminui 1 no total do tipo de barco
 			    	if(barcos[barco_aleatorio] == 1)  total1 -= 1;
 			    	if(barcos[barco_aleatorio] == 2)  total2 -= 1;
 			    	if(barcos[barco_aleatorio] == 21) total2 -= 1;
@@ -211,65 +204,52 @@ namespace ir{
 			    	if(barcos[barco_aleatorio] == 51) total5 -= 1;
 
 
-				   	std::cout << "\n coluna vez = " << coluna_vez << std::endl;
-				    std::cout << "\n linha vez = " << linha_vez << std::endl;
-			    	std::cout << "\n barco da vez = "<< barcos[barco_aleatorio] << std::endl;
+				   	// std::cout << "\n coluna vez = " << coluna_vez << std::endl;
+				    // std::cout << "\n linha vez = " << linha_vez << std::endl;
+			    	// std::cout << "\n barco da vez = "<< barcos[barco_aleatorio] << std::endl;
 
-			    	
-			    	m_barcos[total_barcos][0] = linha_vez;
+			    	// Preenche na matriz m_matriz cada barco preenchido, para salvar no arquivo, no final
+			    	m_barcos[total_barcos][0] = linha_vez; 	
 			    	m_barcos[total_barcos][1] = coluna_vez;
 			    	m_barcos[total_barcos][2] = barcos[barco_aleatorio];
 
-			    	preencher_barco(linha_vez, coluna_vez, barcos[barco_aleatorio]);
+			    				    		std::cout << "\n aqio" << barco_aleatorio << std::endl;
 
-			    	total_barcos -= 1;
+
+			    	// preenche a matriz de barcos com o barco encontrado e a posição
+			    	preencher_barco(linha_vez, coluna_vez, barcos[barco_aleatorio]); 
+
+			    	total_barcos -= 1; // Menos um barco disponível
 			    	
-			    	std::cout << "\n barco1 " << total1<< std::endl;;
-			    	std::cout << "\n barco2 " << total2<< std::endl;;
-			    	std::cout << "\n barco3 " << total3<< std::endl;;
-			    	std::cout << "\n barco4 " << total4<< std::endl;;
+			    	// std::cout << "\n barco1 " << total1<< std::endl;;
+			    	// std::cout << "\n barco2 " << total2<< std::endl;;
+			    	// std::cout << "\n barco3 " << total3<< std::endl;;
+			    	// std::cout << "\n barco4 " << total4<< std::endl;;
 
 			    	// std::cout << "\n linha_vez " << linha_vez;
 			    	// std::cout << "\n coluna_vez " << coluna_vez;
 			    	// std::cout << "\n total de barcos " << total_barcos;
 			    	// std::cout << "\n barco vez " << barcos[barco_aleatorio];
-			    	std::cout << "\n" << std::endl;
+			    	// std::cout << "\n" << std::endl;
 			    }else{
-
-			    	std::cout << "\n aquierroasdr = " << std::endl;;
+			    	// Caso não encontre barco para a linha x coluna do sorteio
+			    	// A corrdenada linha x coluna é jogada para o final do array de posições livres
+			    	// É retirado 1 de limite_aleatorio para que essa coordenada não entre mais no sorteio
 
 			    	std::swap(* posicoes_livres[posicao_aleatoria_casa], * posicoes_livres[limite_aleatorio]);
 			    	limite_aleatorio -= 1;
-			    	std::cout << "\n aquierror = " << linha_vez << std::endl;;
-
+			    	
 			    }
-			    barco_limite = 0;
-
-
-			    for (int i = 0; i < 10; ++i){
-			        for (int j = 0; j < 10; ++j){
-			            if(matriz[i][j] == 1){
-			        			std::cout << "- ";
-			        		}else{
-			        			std::cout << matriz[i][j] << " ";
-			        	}
-			        }
-			        std::cout << "\n" << std::endl;
-			    }
-			        std::cout << "\n\n" << std::endl;
-
+			    barco_limite = 0; // Zera até onde foi preenchido o array de barcos para uma posição qualquer.
 		    }
 
-		    teste_posicao_livre = false;
-
-		    
-
-       		// ir::criar_barco(matriz, linhas, colunas, posicoes_livres);
-        }
+		    teste_posicao_livre = false; // Para iniciar um novo teste
+		
+		}
 
         std::cout << "\n" << std::endl;
-        for (int i = 0; i < 10; ++i){
-	        for (int j = 0; j < 10; ++j){
+        for (int i = 0; i < linhas; ++i){
+	        for (int j = 0; j < colunas; ++j){
 	        	if(matriz[i][j] == 1){
 	        		 std::cout << "- ";
 	        		}else{
@@ -287,19 +267,16 @@ namespace ir{
 
 
 	bool verifica_barco(int linha, int coluna, int tipo_barco){ // retorna true se pode colocar o barco
-		bool verifica_proxima(true);
-		bool verifica_anterior(true);
+		if(tipo_barco == 1){ // se barco for do tipo 1
+			// verifica se a casa está disponível para preenchder o barco
+			if(verifica_casa_existe(linha, coluna) == 1) return false; 
 
-
-    	 std::cout << " nova verificação de barco \n\n\n\n\n" << std::endl;
-
-		if(tipo_barco == 1){
-			if(verifica_casa_existe(linha, coluna) == 1) return false;
-
+			// Verifica se as casas perto não existem ou estão vazias
 			if(verifica_casa_vazia(linha + 1, coluna) == 1) return false; // inferior
 			if(verifica_casa_vazia(linha - 1, coluna) == 1) return false; // superior
 			if(verifica_casa_vazia(linha, coluna + 1) == 1) return false; // direita
 			if(verifica_casa_vazia(linha, coluna - 1) == 1) return false; // esquerda
+
 			if(verifica_casa_vazia(linha + 1, coluna + 1) == 1) return false; // diagonal direita inferior
 			if(verifica_casa_vazia(linha - 1, coluna + 1) == 1) return false; // diagonal direita superior
 			if(verifica_casa_vazia(linha + 1, coluna - 1) == 1) return false; // diagonal esquerda inferior
@@ -307,7 +284,6 @@ namespace ir{
 		}
 
 		if(tipo_barco == 2){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 1) == 1) return false;
 
@@ -325,13 +301,10 @@ namespace ir{
 			if(verifica_casa_vazia(linha - 1, coluna + 2) == 1) return false; // diagonal direita superior
 			if(verifica_casa_vazia(linha + 1, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
-
-			std::cout << "teste fim" << std::endl;
 		}
 
 		
 		if(tipo_barco == 21){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 1, coluna) == 1) return false;
 
@@ -348,11 +321,9 @@ namespace ir{
 			if(verifica_casa_vazia(linha - 1, coluna + 1) == 1) return false; // diagonal direita superior
 			if(verifica_casa_vazia(linha + 2, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
-			std::cout << "teste fim" << std::endl; 	
 		}
 
 		if(tipo_barco == 3){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 1) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 2) == 1) return false;
@@ -377,13 +348,9 @@ namespace ir{
 			if(verifica_casa_vazia(linha + 1, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
 
-
-			std::cout << "teste fim" << std::endl;
-
 		}
 
 		if(tipo_barco == 31){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 1, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 2, coluna) == 1) return false;
@@ -403,13 +370,10 @@ namespace ir{
 			if(verifica_casa_vazia(linha - 1, coluna + 1) == 1) return false; // diagonal direita superior
 			if(verifica_casa_vazia(linha + 3, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
-
-			std::cout << "teste fim" << std::endl; 	
 		}
 
 
 		if(tipo_barco == 4){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 1) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 2) == 1) return false;
@@ -437,13 +401,9 @@ namespace ir{
 			if(verifica_casa_vazia(linha + 1, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
 
-
-			std::cout << "teste fim" << std::endl;
-
 		}
 
 		if(tipo_barco == 41){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 1, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 2, coluna) == 1) return false;
@@ -466,12 +426,9 @@ namespace ir{
 			if(verifica_casa_vazia(linha - 1, coluna + 1) == 1) return false; // diagonal direita superior
 			if(verifica_casa_vazia(linha + 4, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
-
-			std::cout << "teste fim" << std::endl; 	
 		}
 
 		if(tipo_barco == 51){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 1, coluna) == 1) return false;
 			if(verifica_casa_existe(linha + 2, coluna) == 1) return false;
@@ -497,14 +454,11 @@ namespace ir{
 			if(verifica_casa_vazia(linha - 1, coluna + 1) == 1) return false; // diagonal direita superior
 			if(verifica_casa_vazia(linha + 5, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
-
-			std::cout << "teste fim" << std::endl; 	
 		}
 
 		
 
 		if(tipo_barco == 5){
-			std::cout << "teste inicio" << std::endl;
 			if(verifica_casa_existe(linha, coluna) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 1) == 1) return false;
 			if(verifica_casa_existe(linha, coluna + 2) == 1) return false;
@@ -534,155 +488,33 @@ namespace ir{
 			if(verifica_casa_vazia(linha + 1, coluna - 1) == 1) return false; // diagonal esquerda inferior
 			if(verifica_casa_vazia(linha - 1, coluna - 1) == 1) return false; // diagonal esquerda superior
 
-
-			std::cout << "teste fim" << std::endl;
-
 		}
 
-		// std::cout << " fim da nova verificação de barco \n\n\n\n\n" << std::endl;
-
-		// if(tipo_barco == 3){
-		// 	if(verifica_proxima_casa(linha, coluna, 3) == false){ // final da linha
-		// 		return false;
-		// 	}
-		// 	if(verifica_anterior_casa(linha, coluna, 3) == false){
-		// 		return false;
-		// 	}
-		// 	if(verifica_topo_casa(linha, coluna, 3) == false){
-		// 		return false;
-		// 	}
-
-		// 	if(verifica_inferior_casa(linha + 1, coluna, 3) == false) return false;
-
-		// 	if(verifica_inferior_casa(linha, coluna, 3) == false) return false;
-
-		// }
-		
-
-		// if(tipo_barco == 31){
-		// 	if(verifica_proxima_casa(linha, coluna, 1) == false) return false;
-			
-		// 	if(verifica_proxima_casa(linha + 1, coluna, 1) == false) return false;
-
-		// 	if(verifica_proxima_casa(linha + 2, coluna, 1) == false) return false;
-			
-		// 	if(verifica_anterior_casa(linha, coluna, 1) == false) return false;
-			
-		// 	if(verifica_anterior_casa(linha + 1, coluna, 1) == false) return false;
-
-		// 	if(verifica_anterior_casa(linha + 2, coluna, 1) == false) return false;
-			
-		// 	if(verifica_topo_casa(linha, coluna, 1) == false) return false;
-			
-		// 	if(verifica_inferior_casa(linha + 3, coluna, 1) == false) return false;
-			
-		// }
-
-
-
-
-		return true;
+		return true; // O barco está disponível, pois passou em todos os testes
 	}
 
-	int verifica_casa_vazia(int linha, int coluna){
-		std::cout << coluna << " verifica casa vazia \n " << std::endl;
-		std::cout << linha << " linha " << std::endl;
-		std::cout << coluna << " coluna \n " << std::endl;
-
+	int verifica_casa_vazia(int linha, int coluna){ // verifica se a coordenada linha x coluna está vazia e existe
 		if((linha < linhas) && (coluna < colunas) && (linha >= 0) && (coluna >= 0)){ 
 			if(matriz[linha][coluna] == 1){
 				return 1; // 1 se está preenchida
 			}
 		}
-		return 0; // 0 se tá livre 
+		return 0; // 0 se tá livre ou não existe
 	}
 
-	int verifica_casa_existe(int linha, int coluna){
-		std::cout << coluna << " verifica casa exite \n " << std::endl;
-		std::cout << linha << " verifica casa exite \n " << std::endl;
-
+	int verifica_casa_existe(int linha, int coluna){  // verifica se a coordenada linha x coluna existe e se está livre
 		if((linha < linhas) && (coluna < colunas) && (linha >= 0) && (coluna >= 0)){ 
 			if(matriz[linha][coluna] == 1){
-				return 1;
+				return 1; // retorna 1 se está ocupada
 			}else{
-				return 0;
+				return 0; // retorna 0 existe e está livre
 			}
 		}
 		return 1; // 1 se não existe
 	}
 	
-	// bool verifica_anterior_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
-	// 	if(coluna == 0 ){
-	// 		return true;
-	// 	}else{
-	// 		for (int j = 0; j < casas; ++j){
-	// 			if(matriz[linha + j][coluna] == 1){
-	// 				return false;
-	// 			}
-	// 		}
-	// 	}
-	// 	return true;
-	// }
 
-	// bool verifica_proxima_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
-	// 	if((coluna + casas) < colunas){
-	// 		for(int j = 0; j <= casas; ++j){
-				
-				
-	// 			// std::cout << matriz[linha][coluna + j] << " verificado " << std::endl;
-	// 			// std::cout << linha << " linha " << std::endl;
-	// 			// std::cout << coluna+j << " coluna \n " << std::endl;
-
-	// 			if(matriz[linha][coluna + j] == 1){
-	// 				return false;
-	// 			}
-	// 		}
-	// 	}else{
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
-
-	// bool verifica_topo_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
-	// 	if(linha != 0){
-	// 		for (int j = 0; j <= casas; ++j){
-	// 			if(matriz[linha - 1][coluna + j] == 1){
-	// 				return false;
-	// 			}
-	// 		}
-	// 	}
-	// 	return true;
-	// }
-
-	// bool verifica_inferior_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
-	// 	if(linha != linhas){
-	// 		for (int j = 0; j <= casas; ++j){
-				
-
-	// 			std::cout << matriz[linha][coluna + j] << " verificado " << std::endl;
-	// 			std::cout << linha << " linha " << std::endl;
-	// 			std::cout << coluna+j << " coluna \n " << std::endl;
-
-	// 			if(matriz[linha][coluna + j] == 1){
-	// 				return false;
-	// 			}
-	// 		}
-	// 	}
-	// 	return true;
-	// }
-
-	// bool verifica_superior_casa(int linha, int coluna, int casas){ // retorna true se a próxima casa estiver ocupada
-	// 	if(coluna != 0){
-	// 		for (int j = 0; j <= casas; ++j){
-	// 			if(matriz[linha - 1][coluna + j] == 1){
-	// 				return false;
-	// 			}
-	// 		}
-	// 	}
-	// 	return true;
-	// }
-
-
+	// Preenche as casas do barco
 	void preencher_barco(int linha, int coluna, int tipo_barco){
 		if(tipo_barco == 1){
 			matriz[linha][coluna] = 1;
@@ -741,53 +573,7 @@ namespace ir{
 		}
 
 
-		// if(tipo_barco == 31){
-		// 	matriz[linha][coluna] = 1;
-		// 	matriz[linha + 1][coluna] = 1;
-		// 	matriz[linha + 2][coluna] = 1;
-		// }
-
+	
 	}
-
-// Função PREENCHER_ESPACOS(linha, coluna, nome_barco){
-//     Preenche como 2 os espaços ao lado de linha x coluna   
-//     Deve levar em consideração o tipo de barco
-//     ex: PREENCHER_ESPACOS(0, 2, matriz)
-//         PREENCHER_ESPACOS(4, 4, matriz)
-
-//             0  1  2  3  4  5  6
-
-//         0    0, 2, 1, 2, 0, 0, 0
-//         1    2, 2, 2, 2, 0, 0, 0
-//         2    0, 0, 0, 0, 0, 0, 0
-//         3    0, 0, 0, 0, 2, 0, 0
-//         4    0, 0, 0, 2, 1, 2, 0
-//         5    0, 0, 0, 0, 2, 0, 0
-//         6    0, 0, 0, 0, 0, 0, 0
-
-// Funcao VERIFICA_BARCO(linha, coluna, matriz):
-//     Verifica quais barcos podem ser colocados na linha x coluna
-//     Retorna a lista dos barcos que podem ser colocados, leva em consideração o limite de barcos do tabuleiro.
-    
-
-// Função CRIAR_BARCO():
-//     Percorre cada posição igual a 0 e verifica se ela pode ser preenchida com algum barco chamando VERIFICA_BARCO
-//     Guarda a posição e qual barco pode ser colocado nela
-//     Sorteia uma posição que pode ter barcos
-//     Sorteia um barco para essa posição
-//     Chama PREENCHER_ESPACOS(linha, coluna, nome_barco)
-//     Após isso preenche como 1 os espaços do barco
-
-
-// ----- 5 / no sentido vertical é o 51
-
-// ---- 4 / no sentido vertical é o 41
-
-// ---  3 / no sentido vertical é o 31
-
-// --   2 / no sentido vertical é o 21
-
-// -    1 / no sentido vertical é o 11
-
 
 }
