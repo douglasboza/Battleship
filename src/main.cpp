@@ -64,33 +64,6 @@ int main (int argc, char* const argv[]){
 
 
 
-    // std::cout << matriz.end() << std::endl;
-
-
-    // ir::compact( std::begin(A), std::end(A));
-
-    // ir::partition( std::begin(A), std::end(A), std::begin(A) + 3);
-
-    // ir::rotate(std::begin(A), std::begin(A) + 1, std::end(A));
-    // ir::rotate(std::begin(A), std::begin(A) + 2 , std::end(A) - 2);
-    // ir::rotate(std::begin(A), std::begin(A) + 2 , std::end(A) - 4);
-            // rotate(first, n_first, last - 2);
-
-    // for (auto i(std::begin(A)); i != std::end(A); ++i){
-    //       std::cout << * a << " "; 
-    // }
-    // [ −5, 3, −2, 1, 7, 7, 7, 9, 8, 10 ]
-
-    // int A[]{ 1, 2, 3, 4, 5 };
-    // // ir::value_type A_E[]{ 1, 4, 3, 2, 5};
-    //     ir::reverse(std::begin(A), std::end(A) );
-    // // ASSERT_EQ( std::distance( std::begin(A), std::end(A) ), std::distance( std::begin(A_E), std::end(A_E) ) );
-    // // ASSERT_TRUE( std::equal( std::begin(A), std::end(A), std::begin(A_E) ) );
-
-    // for (auto i(std::begin(A)); i != std::end(A); ++i){
-    //       // std::cout << * i << " "; 
-    // }
-
 
     return EXIT_SUCCESS;
 }
