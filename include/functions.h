@@ -19,7 +19,7 @@ namespace ir {
  	bool principal();
 
  	//preenche o barco no tabuleiro
- 	void preencher_barco(int linha, int coluna, int tipo_barco);
+ 	void preencher_barco(int linha, int coluna, int tipo_barco, int valor_preencher);
  	
  	//verifica se linha x coluna existe no tabuleiro
  	int verifica_casa_existe(int linha, int coluna);
@@ -32,6 +32,17 @@ namespace ir {
 
  	//salva o tabuleiro no arquivo
  	void salvar_barco();
+
+ 	//carrega o tabuleiro do arquivo
+ 	bool carrega_tabuleiro(int tabuleiro);
+ 	// retorna false se não houver esse tabuleiro
+ 	// caso contrário, retorna true e carrega o tabuleiro na matriz
+
+ 	//inicia o jogo
+ 	void iniciar_jogo();
+
+ 	//retorna se o barco foi destruído por completo
+ 	bool verifica_barco_tiro(int linha, int coluna, int tipo_barco);
 
 }
 

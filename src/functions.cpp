@@ -2,8 +2,14 @@
 #include "../include/functions.h"
 #include <iostream> // cout, endl
 #include <fstream> // incluir 
-
+#ifdef __cplusplus__
+  #include <cstdlib>
+#else
+  #include <stdlib.h>
+#endif
+#include <string>  
 namespace ir{
+
 	//total disponível para cada barco
 	int total5(1);
 	int total4(2);
@@ -17,7 +23,7 @@ namespace ir{
 
 	int total_barcos = total5 + total4 + total3 + total2 + total1;
 	int total_barcos_fixo = total_barcos;
-	int m_barcos[10][2]; // matriz com os barcos do tabuleiro
+	int m_barcos[10][3]; // matriz com os barcos do tabuleiro
 
 	void inicializa_matriz(int l, int c){  // Aloca memória para a matriz do tabuleiro
 		linhas = l; // seta linhas do tabuleiro na variável global
@@ -64,16 +70,15 @@ namespace ir{
 	void salvar_barco(){ // Salva o array de barcos no arquivo	
 		std::ofstream out;
 		out.open("tabuleiros", std::ios::out | std::ios::app ); 
+		out << linhas << " " << colunas << std::endl;
 
-		for (int i = 0; i < total_barcos_fixo; ++i){
+		for (int i = 1; i <= total_barcos_fixo; ++i){
 	        out << m_barcos[i][0] << " " << m_barcos[i][1] << " " << m_barcos[i][2] << std::endl;
 	    }
 	    out << " 9999 " << std::endl; //indica o final de um tabuleiro
 		out.close();
-		  
-	}
-
-
+		 
+	}		
 
 
 	// função principal que gera o tabuleiro
@@ -108,7 +113,7 @@ namespace ir{
 		    while(teste_posicao_livre == false){ // até encontrar uma posicao que seja possível colocar barco
 	    		// srand(time(NULL));
 		    	if(limite_aleatorio == 0 ){ // Caso 0, significa que todas as posições estão indisponíveis
-		    		std::cout << "\n Erro! não conseguiu achar uma solução";
+		    		// std::cout << "\n Erro! não conseguiu achar uma solução";
 		    		return false;
 		    	}
 
@@ -213,11 +218,11 @@ namespace ir{
 			    	m_barcos[total_barcos][1] = coluna_vez;
 			    	m_barcos[total_barcos][2] = barcos[barco_aleatorio];
 
-			    				    		std::cout << "\n aqio" << barco_aleatorio << std::endl;
+			    				    		// std::cout << "\n aqio" << barco_aleatorio << std::endl;
 
 
 			    	// preenche a matriz de barcos com o barco encontrado e a posição
-			    	preencher_barco(linha_vez, coluna_vez, barcos[barco_aleatorio]); 
+			    	preencher_barco(linha_vez, coluna_vez, barcos[barco_aleatorio], 1); 
 
 			    	total_barcos -= 1; // Menos um barco disponível
 			    	
@@ -247,24 +252,24 @@ namespace ir{
 		
 		}
 
-        std::cout << "\n" << std::endl;
-        for (int i = 0; i < linhas; ++i){
-	        for (int j = 0; j < colunas; ++j){
-	        	if(matriz[i][j] == 1){
-	        		 std::cout << "- ";
-	        		}else{
-	        			 std::cout << matriz[i][j] << " ";
-	        	}
-	        }
-	        std::cout << "\n" << std::endl;
-	    }
+     //    std::cout << "\n" << std::endl;
+     //    for (int i = 0; i < linhas; ++i){
+	    //     for (int j = 0; j < colunas; ++j){
+	    //     	if(matriz[i][j] == 1){
+	    //     		 std::cout << "- ";
+	    //     		}else{
+	    //     			 std::cout << matriz[i][j] << " ";
+	    //     	}
+	    //     }
+	    //     std::cout << "\n" << std::endl;
+	    // }
 
-	    salvar_barco(); 
+    	salvar_barco();
+
 	    return true;
 
     }
-
-
+    
 
 	bool verifica_barco(int linha, int coluna, int tipo_barco){ // retorna true se pode colocar o barco
 		if(tipo_barco == 1){ // se barco for do tipo 1
@@ -515,65 +520,328 @@ namespace ir{
 	
 
 	// Preenche as casas do barco
-	void preencher_barco(int linha, int coluna, int tipo_barco){
+	void preencher_barco(int linha, int coluna, int tipo_barco, int valor_preencher){
 		if(tipo_barco == 1){
-			matriz[linha][coluna] = 1;
+			matriz[linha][coluna] = valor_preencher;
 		}
 
 		if(tipo_barco == 2){
-			matriz[linha][coluna] = 1;
-			matriz[linha][coluna + 1]  = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha][coluna + 1] = valor_preencher;
 		}
 
 		if(tipo_barco == 21){
-			matriz[linha][coluna] = 1;
-			matriz[linha + 1][coluna] = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha + 1][coluna] = valor_preencher;
 		}
 
 		if(tipo_barco == 3){
-			matriz[linha][coluna] = 1;
-			matriz[linha][coluna + 1]  = 1;
-			matriz[linha][coluna + 2]  = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha][coluna + 1] = valor_preencher;
+			matriz[linha][coluna + 2] = valor_preencher;
 		}
 
 		if(tipo_barco == 31){
-			matriz[linha][coluna] = 1;
-			matriz[linha + 1][coluna] = 1;
-			matriz[linha + 2][coluna] = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha + 1][coluna] = valor_preencher;
+			matriz[linha + 2][coluna] = valor_preencher;
 		}
 
 		if(tipo_barco == 4){
-			matriz[linha][coluna] = 1;
-			matriz[linha][coluna + 1]  = 1;
-			matriz[linha][coluna + 2]  = 1;
-			matriz[linha][coluna + 3]  = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha][coluna + 1] = valor_preencher;
+			matriz[linha][coluna + 2] = valor_preencher;
+			matriz[linha][coluna + 3] = valor_preencher;
 		}
 
 		if(tipo_barco == 41){
-			matriz[linha][coluna] = 1;
-			matriz[linha + 1][coluna] = 1;
-			matriz[linha + 2][coluna] = 1;
-			matriz[linha + 3][coluna] = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha + 1][coluna] = valor_preencher;
+			matriz[linha + 2][coluna] = valor_preencher;
+			matriz[linha + 3][coluna] = valor_preencher;
 		}
 
 		if(tipo_barco == 5){
-			matriz[linha][coluna] = 1;
-			matriz[linha][coluna + 1]  = 1;
-			matriz[linha][coluna + 2]  = 1;
-			matriz[linha][coluna + 3]  = 1;
-			matriz[linha][coluna + 4]  = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha][coluna + 1] = valor_preencher;
+			matriz[linha][coluna + 2] = valor_preencher;
+			matriz[linha][coluna + 3] = valor_preencher;
+			matriz[linha][coluna + 4] = valor_preencher;
 		}
 
 		if(tipo_barco == 51){
-			matriz[linha][coluna] = 1;
-			matriz[linha + 1][coluna] = 1;
-			matriz[linha + 2][coluna] = 1;
-			matriz[linha + 3][coluna] = 1;
-			matriz[linha + 4][coluna] = 1;
+			matriz[linha][coluna] = valor_preencher;
+			matriz[linha + 1][coluna] = valor_preencher;
+			matriz[linha + 2][coluna] = valor_preencher;
+			matriz[linha + 3][coluna] = valor_preencher;
+			matriz[linha + 4][coluna] = valor_preencher;
 		}
 
 
 	
 	}
 
+
+ 	//carrega o tabuleiro do arquivo
+ 	bool carrega_tabuleiro(int tabuleiro){ 			
+		int lin(0);
+		int col(0);
+		int barc(0);
+		int cont(1);
+
+		// total5 = 0;
+		// total4 = 0;
+		// total3 = 0;
+		// total2 = 0;
+
+		// total51 = 0;
+		// total41 = 2;
+		// total31 = 0;
+		// total21 = 0;
+		// total1 = 0;
+
+		std::ifstream leitura;
+		leitura.open("tabuleiros", std::ios_base::in);
+		
+		while(cont < tabuleiro){
+			if(leitura.eof()){
+				std::cout << "Digite um tabuleiro válido" << std::endl;
+				return false;
+			}
+			leitura.get();
+			leitura >> lin;
+			if(lin == 9999){
+				cont++;
+			}
+		}
+		// leitura.get();
+		leitura >> linhas;
+		leitura.get();
+		leitura >> colunas;
+
+		ir::inicializa_matriz(linhas, colunas);
+		ir::zera_matriz();
+
+		for (int i = 0; i < 10; ++i){
+			if(leitura.eof()){
+				std::cout << "Digite um tabuleiro válido" << std::endl;
+				return false;
+			}
+			leitura.get();
+			leitura >> lin;
+
+			leitura.get();
+			leitura >> col;
+
+			leitura.get();
+			leitura >> barc;
+			preencher_barco(lin, col, barc, barc);
+
+			
+		}
+
+		return true;
+ 	}
+ 	// retorna false se não houver esse tabuleiro
+ 	// caso contrário, retorna true e carrega o tabuleiro na matriz
+
+ 	void iniciar_jogo(){
+ 		int jogadas(0);
+ 		int lin(0);
+ 		int col(0);
+ 		int erros(0);
+ 		int acertos(0);
+ 		int barcos_restantes = total5 + total4 + total3 + total2 + total1;
+ 		
+ 		bool final(false);
+
+ 		while(!final){
+ 			system("clear");
+
+	 		std::cout << "\nNúmero de jogadas: "<< jogadas;
+	 		std::cout << " |||||| Número de erros: "<< erros;
+	 		std::cout << " |||||| Número de acertos: "<< acertos;
+	 		std::cout << " |||||| Barcos restantes: "<< barcos_restantes << std::endl;
+
+			std::cout << "\nBarcos: ";
+	 		std::cout << "\nA - Com 5 casas na horizontal";
+	 		std::cout << "\nB - Com 5 casas na vertical";
+	 		std::cout << "\n\nC - Com 4 casas na horizontal";
+	 		std::cout << "\nD - Com 4 casas na vertical: ";
+	 		std::cout << "\n\nE - Com 3 casas na horizontal";
+	 		std::cout << "\nF - Com 3 casas na vertical";
+	 		std::cout << "\n\nG - Com 2 casas na horizontal";
+	 		std::cout << "\nH - Com 2 casas na vertical";
+	 		std::cout << "\n\nI - Com 1 casa na horizontal";
+	 		
+	 		std::cout << "\n" << std::endl;		
+	 		std::cout << " ";
+			for (int i = 0; i < linhas; ++i){
+	 			std::cout << "  " << i;
+	 		}	 
+	 		std::cout << "\n" << std::endl;		
+
+	 		for (int i = 0; i < linhas; ++i){
+	 			std::cout << i << "  ";
+		        for (int j = 0; j < colunas; ++j){
+
+		        	switch (matriz[i][j]){
+					    case 52:
+					   		std::cout << "A  ";
+					    break;
+
+					    case 512:
+					   		std::cout << "B  ";
+					    break;
+					    
+					    case 42:
+					   		std::cout << "C  ";
+					    break;
+
+					    case 412:
+					   		std::cout << "D  ";
+					    break;
+
+					    case 32:
+					   		std::cout << "E  ";
+					    break;
+
+					    case 312:
+					   		std::cout << "F  ";
+					    break;
+
+					    case 22:
+					   		std::cout << "G  ";
+					    break;
+
+					    case 212:
+					   		std::cout << "H  ";
+					    break;
+
+					    case 12:
+					   		std::cout << "I  ";
+					    break;
+
+					    case -1:
+					   		std::cout << "0  ";
+					    break;
+
+					    default:
+					    	std::cout << "-  ";
+					}
+
+		        }
+		        std::cout << "\n" << std::endl;
+		    }
+
+	 		std::cout << "\nDigite a linha em que deseja atirar: " << std::endl;
+	 		std::cin >> lin;
+
+	 		std::cout << "Digite a coluna em que deseja atirar: " << std::endl;
+	 		std::cin >> col;
+
+	 		jogadas++;
+
+	 		// std::cout << "igual  " << matriz[lin][col] <<std::endl;
+
+	 		if(matriz[lin][col] != 0){
+	 			acertos ++;
+	 		}
+
+	 		switch (matriz[lin][col]){
+			    case 5:
+			   		matriz[lin][col] = 52;
+			    	verifica_barco_tiro(lin, col, 52);
+			    break;
+
+			    case 51:
+			   		matriz[lin][col] = 512;
+			    break;
+			    
+			    case 4:
+			   		matriz[lin][col] = 42;
+			    break;
+
+			    case 41:
+			   		matriz[lin][col] = 412;
+			    break;
+
+			    case 3:
+			   		matriz[lin][col] = 32;
+			    break;
+
+			    case 31:
+			   		matriz[lin][col] = 312;
+			    break;
+
+			    case 2:
+			   		matriz[lin][col] = 22;
+			    break;
+
+			    case 21:
+			   		matriz[lin][col] = 212;
+			    break;
+
+			    case 1:
+			   		matriz[lin][col] = 12;
+			    break;
+
+				case 0:
+			   		matriz[lin][col] = -1;
+			    	erros++;
+			    break;
+
+			    default:
+			    	erros++;
+			}
+
+ 		}
+
+ 	}
+
+ 	// retorna se o barco foi destruído por completo
+ 	bool verifica_barco_tiro(int linha, int coluna, int tipo_barco){
+ 		int cont(0);
+
+		for(int i = 0; (i < 5) && ((i + coluna) < colunas); ++i){
+			std::cout << "coluna próxima === " << matriz[linha][coluna + i] << std::endl;
+
+			if(matriz[linha][coluna + i] == tipo_barco){
+				cont += 1;
+			}else{
+				i = 999;
+			}
+		}
+
+		for(int i = 0; (i < 5) && ((coluna - i) >= 0); ++i){
+			std::cout << "coluna anterior == " << matriz[linha][coluna - i] << std::endl;
+
+			if(matriz[linha][coluna - i] == tipo_barco){
+				cont += 1;
+			}else{
+				i = 999;
+			}
+		}
+		cont -= 1;
+
+		if((cont == 5) && (tipo_barco == 52)){
+			return true;
+		}
+ 		
+ 		if((cont == 5) && (tipo_barco == 52)){
+			return true;
+		}
+
+		if((cont == 5) && (tipo_barco == 52)){
+			return true;
+		}
+
+
+
+ 		return false;
+
+ 	}
+
 }
+
+

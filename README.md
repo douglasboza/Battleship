@@ -1,63 +1,51 @@
 
-g++ -Wall -std=c++11 src/main.cpp include/functions.h src/functions.cpp -o a
-
+Comando paracompilar.
+g++ -Wall -std=c++11 src/main.cpp include/functions.h src/functions.cpp -o run
+./run
 
 
 Cada barco é numerado em decimal, sendo levado em consideração o sentido do barco e as casas dele.
 
------ 5 / no sentido vertical é o 51
+barco ----- representado por 5 | no sentido vertical é o 51
 
----- 4 / no sentido vertical é o 41
+barco ---- representado por 4 | no sentido vertical é o 41
 
----  3 / no sentido vertical é o 31
+barco --- representado por 3 | no sentido vertical é o 31
 
---   2 / no sentido vertical é o 21
+barco -- representado por 2 | no sentido vertical é o 21
 
--    1 / no sentido vertical é o 11
+barco - representado por 1 | no sentido vertical é o 11
 
-Temos o seguintes barcos: 4, 41, 3, 31, 2, 21, 1, 11
+Temos o seguintes possíveis barcos para um tabuleiro: 5, 51, 4, 41, 3, 31, 2, 21, 1, 11
 
-
-Função principal;
-    Chama GERAR_MATRIZ
-    Enquanto houver barco disponível:
-        Chama CRIAR_BARCO
-
-
-Função GERAR_MATRIZ(linhas, colunas):
-    Cria uma matriz linhasxcolunas com todos os elementos iguais a 0.
-    return matriz
-
-Funcao VERIFICA_BARCO(linha, coluna, matriz):
-    Verifica quais barcos podem ser colocados na linha x coluna
-    Retorna a lista dos barcos que podem ser colocados, leva em consideração o limite de barcos do tabuleiro.
-    
-
-Função CRIAR_BARCO():
-    Percorre cada posição igual a 0 e verifica se ela pode ser preenchida com algum barco chamando VERIFICA_BARCO
-    Guarda a posição e qual barco pode ser colocado nela
-    Sorteia uma posição que pode ter barcos
-    Sorteia um barco para essa posição
-    Chama PREENCHER_ESPACOS(linha, coluna, nome_barco)
-    Após isso preenche como 1 os espaços do barco
+Obrigatoriamente cada tabuleiro tem:
+Com 5 casas deve ter 1 barco
+Com 4 casas deve ter 2 barcos
+Com 3 casas deve ter 3 barcos
+Com 2 casas deve ter 3 barcos
+Com 1 casas deve ter 1 barco
 
 
 
-Função PREENCHER_ESPACOS(linha, coluna, nome_barco){
-    Preenche como 2 os espaços ao lado de linha x coluna   
-    Deve levar em consideração o tipo de barco
-    ex: PREENCHER_ESPACOS(0, 2, matriz)
-        PREENCHER_ESPACOS(4, 4, matriz)
+O método para gerar o tabuleiro utiliza duas matrizes, uma delas representa o tabuleiro, onde cada casa é preenchida com 0
+Após prencher um barco, a casa é preenchida com 1.
 
-            0  1  2  3  4  5  6
+A outra matriz é utilizada para guardar todas as coordenadas da matriz do tabuleiro
+Ex:
+m[0][0] = linha da coordenada 0
+m[0][1] = coluna da coordenada 0
 
-        0    0, 2, 1, 2, 0, 0, 0
-        1    2, 2, 2, 2, 0, 0, 0
-        2    0, 0, 0, 0, 0, 0, 0
-        3    0, 0, 0, 0, 2, 0, 0
-        4    0, 0, 0, 2, 1, 2, 0
-        5    0, 0, 0, 0, 2, 0, 0
-        6    0, 0, 0, 0, 0, 0, 0
+m[1][0] = linha da coordenada 1
+m[1][1] = coluna da coordenada 1
 
+m[2][0] = linha da coordenada 2
+m[2][1] = coluna da coordenada 2
 
+O sorteio é realizado nessa matriz, caso não seja possível preencher barco algum na coordenada sorteada, ela é posicionada
+no final da matriz e não entrará no próxima sorteio.
+Caso a posição sorteada tenha algum barco disponível para preencher, então é realizado um sorteio entre esses barcos.
 
+Dessa forma, o algorítmo possui uma alta possibilidade de encontrar uma solução e gerar um tabuleiro, pois ele não considera
+as posições ocupadas para realizar o sorteio.
+
+Porém, dependendo da quantidade de linhas e colunas, pode haver combinações que impossibilitem o preenchimento de todos os barcos. Quando isso ocorre, o algoritmo tenta gerar novamente um outro tabuleiro
