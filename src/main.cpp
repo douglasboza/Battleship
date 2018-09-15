@@ -4,7 +4,10 @@
 #include <algorithm> // for_each
 #include "../include/functions.h"
 
-
+// Componentes:
+// Douglas Pinheiro Boza
+// Marcos Antonio de Freitas Júnior
+ 
 int main (int argc, char* const argv[]){
     int opcao;
     int linhas(0);
