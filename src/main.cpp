@@ -13,7 +13,6 @@ int main (int argc, char* const argv[]){
     int linhas(0);
     int colunas(0);
     int tabuleiros(0);
-    // int tabuleiro_jogar(0);
 
     std::cout << "Gerar tabuleiros: 1" << std::endl;
     std::cout << "Jogar: 2" << std::endl;
@@ -37,15 +36,16 @@ int main (int argc, char* const argv[]){
         }
 
         bool teste_gerou(true);
-        ir::inicializa_matriz(linhas, colunas);
+        ir::inicializa_matriz(linhas, colunas); // matriz do tabuleiro
+        ir::carrega_strings_tabuleiro(); // carrega os tabuleiros já geraos para verificação posterior
 
         while(tabuleiros > 0){
-            ir::zera_matriz();
+            ir::zera_matriz(); // cada elemento vira 0
             teste_gerou = ir::principal();
-            if(teste_gerou == false){
-                tabuleiros += 1;
+            if(teste_gerou == false){ // se não gerar uma matriz
+                tabuleiros += 1; // gerou
             }else{
-                tabuleiros -= 1;
+                tabuleiros -= 1; // não gerou
             }
         }
         ir::liberar();
@@ -56,10 +56,9 @@ int main (int argc, char* const argv[]){
                 std::cin >> tabuleiros;
             }      
 
-            if(ir::carrega_tabuleiro(tabuleiros)){
+            if(ir::carrega_tabuleiro(tabuleiros)){ // se conseguir carregar o tabuleiro
                 ir::iniciar_jogo();
             }
-
         }
     }
 

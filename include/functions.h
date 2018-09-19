@@ -44,6 +44,12 @@ namespace ir {
  	//retorna se o barco foi destruído por completo
  	bool verifica_barco_tiro(int linha, int coluna, int tipo_barco);
 
+ 	// verifica se o tabuleiro já existe
+ 	bool verifica_tabuleiro_existe();
+
+ 	// carrega todos os tabuleiros em uma matriz de string;
+ 	void carrega_strings_tabuleiro();
+
 }
 
 #endif

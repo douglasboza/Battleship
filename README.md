@@ -32,6 +32,30 @@ Com 1 casa 1 barco
 - Os barcos na vertical são preenchidos para a parte inferior do tabuleiro.
 
 
+Representação dos barcos na matriz, quando o barco teve a casa atingida por um tiro:
+5   vira  52
+51  vira  512
+4   vira  42
+41  vira  412
+3   vira  32
+31  vira  312
+2   vira  22
+21  vira  212
+1   vira  12
+
+
+Representação dos barcos no jogo no terminal:
+A = 5
+B = 51
+C = 4
+D = 41
+E = 3
+F = 31
+G = 2
+H = 21
+i = 1
+
+
 ------------------------------------------------------------
 
 
@@ -61,6 +85,8 @@ Dessa forma, o algorítmo possui uma alta possibilidade de encontrar uma soluç�
 as posições ocupadas para realizar o sorteio.
 
 Porém, dependendo da quantidade de linhas e colunas, pode haver combinações que impossibilitem o preenchimento de todos os barcos, pois ao lado de cada barco não pode haver outro barco. Quando isso ocorre, o algoritmo tenta gerar novamente um outro tabuleiro
+
+Quando um tabuleiro é gerado, há uma verificação para ver se ele já foi gerado antes.
 
 ------------------------------------------------------------
 

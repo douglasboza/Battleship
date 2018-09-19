@@ -17,9 +17,11 @@ namespace ir{
 	int total2(3);
 	int total1(1);
 
+ 	int total_tabuleiros(0); // total de tabuleiros no arquivo e gerado
 	int linhas = 10; // linhas do tabuleiro
 	int colunas = 10; // colunas do tabuleiro
 	int **matriz; //matriz do tabuleiro
+	double*tabuleiros_array; // array com todos os tabuleiros em formato de string;
 
 	int total_barcos = total5 + total4 + total3 + total2 + total1;
 	int total_barcos_fixo = total_barcos;
@@ -33,6 +35,7 @@ namespace ir{
 		for (int i = 0; i < linhas; i++){	
 		    matriz[i] = (int*)malloc(colunas * sizeof(int)); // alocação de meória
 		}
+
 	}
 
 
@@ -42,6 +45,7 @@ namespace ir{
 	        free(matriz[i]);
 
 	    free(matriz);
+	    free(tabuleiros_array);
 	}
 
 	void zera_matriz(){ // //reinicia o tabuleiro zerando as posições
@@ -264,7 +268,11 @@ namespace ir{
 	    //     std::cout << "\n" << std::endl;
 	    // }
 
-    	salvar_barco();
+		if(verifica_tabuleiro_existe()){
+    		salvar_barco();
+		}else{
+			return false;
+		}
 
 	    return true;
 
@@ -589,21 +597,10 @@ namespace ir{
 		int barc(0);
 		int cont(1);
 
-		// total5 = 0;
-		// total4 = 0;
-		// total3 = 0;
-		// total2 = 0;
-
-		// total51 = 0;
-		// total41 = 2;
-		// total31 = 0;
-		// total21 = 0;
-		// total1 = 0;
-
 		std::ifstream leitura;
 		leitura.open("tabuleiros", std::ios_base::in);
 		
-		while(cont < tabuleiro){
+		while(cont < tabuleiro){ // move o ponteiro até o tabuleir oescolhido
 			if(leitura.eof()){
 				std::cout << "Digite um tabuleiro válido" << std::endl;
 				return false;
@@ -614,48 +611,47 @@ namespace ir{
 				cont++;
 			}
 		}
-		// leitura.get();
 		leitura >> linhas;
 		leitura.get();
 		leitura >> colunas;
 
-		ir::inicializa_matriz(linhas, colunas);
-		ir::zera_matriz();
+		ir::inicializa_matriz(linhas, colunas); // inicializa a matriz para o tabuleiro
+		ir::zera_matriz(); // zera os elementos
 
-		for (int i = 0; i < 10; ++i){
+		for (int i = 0; i < 10; ++i){ // carrega a matriz no tabuleiro
 			if(leitura.eof()){
 				std::cout << "Digite um tabuleiro válido" << std::endl;
 				return false;
 			}
-			leitura.get();
+			leitura.get(); // carrega a linha
 			leitura >> lin;
 
-			leitura.get();
+			leitura.get(); // carrega a coluna
 			leitura >> col;
 
-			leitura.get();
+			leitura.get(); // carrega o barco
 			leitura >> barc;
-			preencher_barco(lin, col, barc, barc);
+			preencher_barco(lin, col, barc, barc); // passa as coordenadas para preencher o barco
 
 			
 		}
 
 		return true;
+	 	// retorna false se não houver esse tabuleiro
+	 	// caso contrário, retorna true e carrega o tabuleiro na matriz
  	}
- 	// retorna false se não houver esse tabuleiro
- 	// caso contrário, retorna true e carrega o tabuleiro na matriz
 
  	void iniciar_jogo(){
  		int jogadas(0);
- 		int lin(0);
- 		int col(0);
+ 		int lin(-1);
+ 		int col(-1);
  		int erros(0);
  		int acertos(0);
  		int barcos_restantes = total5 + total4 + total3 + total2 + total1;
  		
  		bool final(false);
 
- 		while(!final){
+ 		while(!final){ // enquanto restar barcos
  			system("clear");
 
 	 		std::cout << "\nNúmero de jogadas: "<< jogadas;
@@ -674,19 +670,21 @@ namespace ir{
 	 		std::cout << "\nH - Com 2 casas na vertical";
 	 		std::cout << "\n\nI - Com 1 casa na horizontal";
 	 		
+	 		// início do print do tabuleiro
 	 		std::cout << "\n" << std::endl;		
 	 		std::cout << " ";
 			for (int i = 0; i < linhas; ++i){
 	 			std::cout << "  " << i;
 	 		}	 
 	 		std::cout << "\n" << std::endl;		
+	 		
 
 	 		for (int i = 0; i < linhas; ++i){
 	 			std::cout << i << "  ";
 		        for (int j = 0; j < colunas; ++j){
 
 		        	switch (matriz[i][j]){
-					    case 52:
+					    case 52: // Caso seja 52, esse barco será representado por A
 					   		std::cout << "A  ";
 					    break;
 
@@ -733,66 +731,93 @@ namespace ir{
 		        }
 		        std::cout << "\n" << std::endl;
 		    }
+		    // fim do print do tabuleiro
 
-	 		std::cout << "\nDigite a linha em que deseja atirar: " << std::endl;
-	 		std::cin >> lin;
+		    if(barcos_restantes == 0){
+		    	std::cout << "\nFim!" << std::endl;
+		    	final = true;
+		    }else{
+		 		std::cout << "\nDigite a linha em que deseja atirar: " << std::endl;
+		 		std::cin >> lin;
+		 		while((lin < 0) || ( lin > linhas)){ // linha válida
+		 			std::cout << "\nLINHA INVÁLIDA" << std::endl;
+		 			std::cin >> lin;
+		 		}
 
-	 		std::cout << "Digite a coluna em que deseja atirar: " << std::endl;
-	 		std::cin >> col;
+		 		std::cout << "Digite a coluna em que deseja atirar: " << std::endl;
+		 		std::cin >> col;
+		 		while((col < 0) || ( col > colunas)){ // coluna válida
+		 			std::cout << "\nCOLUNA INVÁLIDA" << std::endl;
+		 			std::cin >> col;
+		 		}
 
-	 		jogadas++;
 
-	 		// std::cout << "igual  " << matriz[lin][col] <<std::endl;
+		 		jogadas++;
 
-	 		if(matriz[lin][col] != 0){
-	 			acertos ++;
-	 		}
+		 		if(matriz[lin][col] != 0){ // Caso acerte em um barco
+		 			
+			 		switch (matriz[lin][col]){ // Verifica qual barco acertou
+					    case 5:
+					    	acertos ++;
+					   		matriz[lin][col] = 52; // Ao acertar o barco, a posição na matriz vira 52 e não mais 5
+					    	if(verifica_barco_tiro(lin, col, 52)) barcos_restantes -= 1; 
+					    	// verifica se o barco teve todas as casas atingidas
+					    break;
 
-	 		switch (matriz[lin][col]){
-			    case 5:
-			   		matriz[lin][col] = 52;
-			    	verifica_barco_tiro(lin, col, 52);
-			    break;
+					    case 51:
+					    	acertos ++;
+					   		matriz[lin][col] = 512;
+					   		if(verifica_barco_tiro(lin, col, 512)) barcos_restantes -= 1;
+					    break;
+					    
+					    case 4:
+					    	acertos ++;
+					   		matriz[lin][col] = 42;
+					   		if(verifica_barco_tiro(lin, col, 42)) barcos_restantes -= 1;
+					    break;
 
-			    case 51:
-			   		matriz[lin][col] = 512;
-			    break;
-			    
-			    case 4:
-			   		matriz[lin][col] = 42;
-			    break;
+					    case 41:
+					    	acertos ++;
+					   		matriz[lin][col] = 412;
+					   		if(verifica_barco_tiro(lin, col, 412)) barcos_restantes -= 1;
+					    break;
 
-			    case 41:
-			   		matriz[lin][col] = 412;
-			    break;
+					    case 3:
+					    	acertos ++;
+					   		matriz[lin][col] = 32;
+					   		if(verifica_barco_tiro(lin, col, 32)) barcos_restantes -= 1;
+					    break;
 
-			    case 3:
-			   		matriz[lin][col] = 32;
-			    break;
+					    case 31:
+					    	acertos ++;
+					   		matriz[lin][col] = 312;
+					   		if(verifica_barco_tiro(lin, col, 312)) barcos_restantes -= 1;
+					    break;
 
-			    case 31:
-			   		matriz[lin][col] = 312;
-			    break;
+					    case 2:
+					    	acertos ++;
+					   		matriz[lin][col] = 22;
+					   		if(verifica_barco_tiro(lin, col, 22)) barcos_restantes -= 1;
+					    break;
 
-			    case 2:
-			   		matriz[lin][col] = 22;
-			    break;
+					    case 21:
+					    	acertos ++;
+					   		matriz[lin][col] = 212;
+					   		if(verifica_barco_tiro(lin, col, 212)) barcos_restantes -= 1;
+					    break;
 
-			    case 21:
-			   		matriz[lin][col] = 212;
-			    break;
+					    case 1:
+					    	acertos ++;
+					   		matriz[lin][col] = 12;
+					   		barcos_restantes -= 1;
+					    break;
 
-			    case 1:
-			   		matriz[lin][col] = 12;
-			    break;
-
-				case 0:
-			   		matriz[lin][col] = -1;
-			    	erros++;
-			    break;
-
-			    default:
-			    	erros++;
+					    default:
+					    break;
+					}
+				}else{
+					erros++;
+				}
 			}
 
  		}
@@ -802,45 +827,115 @@ namespace ir{
  	// retorna se o barco foi destruído por completo
  	bool verifica_barco_tiro(int linha, int coluna, int tipo_barco){
  		int cont(0);
-
-		for(int i = 0; (i < 5) && ((i + coluna) < colunas); ++i){
-			std::cout << "coluna próxima === " << matriz[linha][coluna + i] << std::endl;
-
-			if(matriz[linha][coluna + i] == tipo_barco){
-				cont += 1;
-			}else{
-				i = 999;
-			}
-		}
-
-		for(int i = 0; (i < 5) && ((coluna - i) >= 0); ++i){
-			std::cout << "coluna anterior == " << matriz[linha][coluna - i] << std::endl;
-
-			if(matriz[linha][coluna - i] == tipo_barco){
-				cont += 1;
-			}else{
-				i = 999;
-			}
-		}
-		cont -= 1;
-
-		if((cont == 5) && (tipo_barco == 52)){
-			return true;
-		}
  		
- 		if((cont == 5) && (tipo_barco == 52)){
+ 		// verificação dos barcos horizontais
+ 		// o código percorre cada coluna e vai somando caso encontre um acerto próximo, caso não encontre ele para a verificação
+ 		if((tipo_barco == 52) || (tipo_barco == 42) || (tipo_barco == 32) || (tipo_barco == 22)){
+			for(int i = 0; (i < 5) && ((i + coluna) < colunas); ++i){ // colunas pra direita
+				if(matriz[linha][coluna + i] == tipo_barco){
+					cont += 1; // encontrou uma casa atingida e igual ao tipo_barco
+				}else{
+					i = 999;// encontrou uma casa não atingida, para a verificação
+				}
+			}
+
+			for(int i = 0; (i < 5) && ((coluna - i) >= 0); ++i){ // colunas para a esquerda
+				if(matriz[linha][coluna - i] == tipo_barco){
+					cont += 1; // encontrou uma casa atingida e igual ao tipo_barco
+				}else{ // encontrou uma casa não atingida, para a verificação
+					i = 999;
+				}
+			}
+ 		}
+ 		//verificação dos barcos na vertical
+ 		if((tipo_barco == 512) || (tipo_barco == 412) || (tipo_barco == 312) || (tipo_barco == 212)){
+			for(int i = 0; (i < 5) && ((i + linha) < colunas); ++i){
+				if(matriz[linha + i][coluna] == tipo_barco){
+					cont += 1;
+				}else{
+					i = 999;
+				}
+			}
+
+			for(int i = 0; (i < 5) && ((linha - i) >= 0); ++i){
+				if(matriz[linha - i][coluna] == tipo_barco){
+					cont += 1;
+				}else{
+					i = 999;
+				}
+			}
+ 		}
+
+		cont -= 1; // ajuste, pois a corrdenada do barco é somada duas vezes
+
+		if((cont == 5) && ((tipo_barco == 52) || (tipo_barco == 512))){
+			//se o barco 5 teve 5 tiros ao seu lado, então ele foi derrotado
 			return true;
 		}
-
-		if((cont == 5) && (tipo_barco == 52)){
+		if((cont == 4) && ((tipo_barco == 42) || (tipo_barco == 412))){
 			return true;
 		}
-
-
-
+		if((cont == 3) && ((tipo_barco == 32) || (tipo_barco == 312))){
+			return true;
+		}
+		if((cont == 2) && ((tipo_barco == 22) || (tipo_barco == 212))){
+			return true;
+		}
+		if((cont == 1) && (tipo_barco == 12)){
+			return true;
+		}
+		
  		return false;
 
  	}
+
+ 	void carrega_strings_tabuleiro(){
+ 		//Percorre os tabuleiros do arquivo e transforma cada tabuleiro em uma string, depois salva com ddouble em tabuleiros_array
+ 		int num(0);
+		std::string cont_tabuleiro_temp = ""; // string para o tabuleiro
+
+        std::ifstream leitura;
+        leitura.open("tabuleiros", std::ios_base::in);
+                
+        if(leitura.is_open()){ // obtem cada linha, coluna e barco do tabuleiro e concatena em cont_tabuleiro_temp
+            while(leitura.eof() == 0){
+                leitura.get();
+                leitura >> num;
+                if(num == 9999){
+                    total_tabuleiros += 1 ;
+                    tabuleiros_array = (double*) realloc(tabuleiros_array, total_tabuleiros * sizeof(double*));
+                    tabuleiros_array[total_tabuleiros - 1] = std::atof(cont_tabuleiro_temp.c_str());
+                    cont_tabuleiro_temp = ""; // limpa a string do tabuleiro
+                }else{
+                    cont_tabuleiro_temp = cont_tabuleiro_temp + std::to_string(num); // concatena os itens do tabuleiro
+                }
+            }
+        	leitura.close();
+        }
+ 	}
+
+
+ 	// verifica se o tabuleiro já existe
+	bool verifica_tabuleiro_existe(){
+		//Verifica se o tabuleiro gerado já foi gerado antes no arquivo
+		std::string cont_tabuleiro_temp = "";  // string para o tabuleiro
+
+		for (int i = 1; i <= total_barcos_fixo; ++i){
+			cont_tabuleiro_temp = cont_tabuleiro_temp + std::to_string(m_barcos[i][0]) + std::to_string(m_barcos[i][1]) + std::to_string(m_barcos[i][2]);
+	    }
+
+	    for (int i = 0; i < total_tabuleiros; ++i){
+	    	if(tabuleiros_array[i] == std::atof(cont_tabuleiro_temp.c_str())){
+	    		return false; // já existe
+	    	}
+	    }	
+	    // Adiciona o tabuleiro no array tabuleiros_array
+	    total_tabuleiros += 1; 
+	    tabuleiros_array = (double*) realloc(tabuleiros_array, total_tabuleiros * sizeof(double*));
+	    tabuleiros_array[total_tabuleiros - 1] = std::atof(cont_tabuleiro_temp.c_str());
+	        return true; // tabuleiro não repetido
+	    }
+
 
 }
 
